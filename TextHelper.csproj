@@ -7,7 +7,6 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
     <AssemblyName>TextHelper</AssemblyName>
     <RootNamespace>TextHelper</RootNamespace>
   </PropertyGroup>
