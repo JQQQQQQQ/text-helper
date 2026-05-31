@@ -166,7 +166,8 @@ public partial class App : System.Windows.Application
         ShowPopup(text, result);
 
         // 自动朗读
-        var autoRead = _config?.GetValue<bool>("TTS:AutoRead") ?? true;
+        var autoReadVal = _config?.GetSection("TTS:AutoRead")?.Value;
+        bool autoRead = autoReadVal is null || !bool.TryParse(autoReadVal, out var parsed) || parsed;
         if (autoRead && result != null && !string.IsNullOrWhiteSpace(result.Translation))
         {
             _ttsService?.Speak(text);

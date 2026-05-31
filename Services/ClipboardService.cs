@@ -16,9 +16,9 @@ public class ClipboardService
     {
         try
         {
-            if (Clipboard.ContainsText())
+            if (System.Windows.Clipboard.ContainsText())
             {
-                return Clipboard.GetText();
+                return System.Windows.Clipboard.GetText();
             }
         }
         catch (Exception ex)

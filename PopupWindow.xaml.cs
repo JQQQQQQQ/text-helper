@@ -75,7 +75,7 @@ public partial class PopupWindow : Window
             var text = TranslationText.Text;
             if (!string.IsNullOrWhiteSpace(text))
             {
-                Clipboard.SetText(text);
+                System.Windows.Clipboard.SetText(text);
                 CopyButton.Content = "✅ 已复制";
             }
         }
