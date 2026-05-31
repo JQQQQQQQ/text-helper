@@ -6,7 +6,7 @@ using Forms = System.Windows.Forms;
 
 namespace TextHelper;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private HotkeyService? _hotkeyService;
     private ClipboardService? _clipboardService;
