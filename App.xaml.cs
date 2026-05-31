@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Interop;
 using TextHelper.Services;
 using Microsoft.Extensions.Configuration;
-using System.Windows.Forms;
+using Forms = System.Windows.Forms;
 
 namespace TextHelper;
 
@@ -12,7 +12,7 @@ public partial class App : Application
     private ClipboardService? _clipboardService;
     private TranslationService? _translationService;
     private TtsService? _ttsService;
-    private NotifyIcon? _trayIcon;
+    private Forms.NotifyIcon? _trayIcon;
     private HwndSource? _hwndSource;
     private PopupWindow? _popupWindow;
     private IConfiguration? _config;
@@ -54,14 +54,14 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"配置文件加载失败: {ex.Message}\n请确保 appsettings.json 存在", "TextHelper",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Forms.MessageBox.Show($"配置文件加载失败: {ex.Message}\n请确保 appsettings.json 存在", "TextHelper",
+                Forms.MessageBoxButtons.OK, Forms.MessageBoxIcon.Warning);
         }
     }
 
     private void CreateTrayIcon()
     {
-        _trayIcon = new NotifyIcon
+        _trayIcon = new Forms.NotifyIcon
         {
             Icon = SystemIcons.Application,  // 可以用自定义图标替换
             Text = "TextHelper - 划词翻译",
@@ -69,7 +69,7 @@ public partial class App : Application
         };
 
         // 右键菜单
-        var contextMenu = new ContextMenuStrip();
+        var contextMenu = new Forms.ContextMenuStrip();
         contextMenu.Items.Add("显示", null, (s, e) => ShowPopup("请先复制文本，然后按快捷键"));
         contextMenu.Items.Add("-");
         contextMenu.Items.Add("退出", null, (s, e) => ExitApp());
@@ -79,7 +79,7 @@ public partial class App : Application
         // 双击托盘图标显示
         _trayIcon.MouseDoubleClick += (s, e) =>
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == Forms.MouseButtons.Left)
                 ShowPopup("TextHelper 正在运行\n快捷键: Ctrl+Alt+C");
         };
     }
@@ -120,7 +120,7 @@ public partial class App : Application
             {
                 _trayIcon?.ShowBalloonTip(3000, "TextHelper",
                     $"快捷键 {modifiers}+{key} 注册失败，可能被其他程序占用",
-                    ToolTipIcon.Warning);
+                    Forms.ToolTipIcon.Warning);
             }
             else
             {
