@@ -19,9 +19,6 @@ public partial class PopupWindow : Window
         ExplanationText.Text = "";
         ExamplesList.Visibility = Visibility.Collapsed;
         SpeakButton.Visibility = Visibility.Collapsed;
-
-        // 点击窗口外自动关闭
-        Deactivated += (s, e) => Close();
     }
 
     /// <summary>
@@ -40,9 +37,6 @@ public partial class PopupWindow : Window
             ExplanationText.Text = result.Explanation;
             ExamplesList.ItemsSource = result.Examples;
         }
-
-        // 点击窗口外自动关闭
-        Deactivated += (s, e) => Close();
     }
 
     /// <summary>

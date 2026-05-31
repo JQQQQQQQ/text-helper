@@ -64,6 +64,7 @@ public class TranslationService
 
         var request = new HttpRequestMessage(HttpMethod.Post, "https://api.deepseek.com/chat/completions");
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         // 通过代理发送（如果配置了）

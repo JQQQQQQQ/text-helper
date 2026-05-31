@@ -14,6 +14,7 @@ public partial class App : System.Windows.Application
     private TtsService? _ttsService;
     private Forms.NotifyIcon? _trayIcon;
     private HwndSource? _hwndSource;
+    private Window? _hiddenWindow;  // 保持隐藏窗口引用，防止 GC 回收
     private PopupWindow? _popupWindow;
     private IConfiguration? _config;
 
@@ -87,7 +88,7 @@ public partial class App : System.Windows.Application
     private void CreateHiddenWindow()
     {
         // 创建一个隐藏窗口来接收 Win32 消息（热键）
-        var window = new Window
+        _hiddenWindow = new Window
         {
             Width = 0,
             Height = 0,
@@ -96,9 +97,9 @@ public partial class App : System.Windows.Application
             ShowActivated = false,
             Visibility = Visibility.Hidden
         };
-        window.Show();
+        _hiddenWindow.Show();
 
-        _hwndSource = PresentationSource.FromVisual(window) as HwndSource;
+        _hwndSource = PresentationSource.FromVisual(_hiddenWindow) as HwndSource;
         if (_hwndSource != null)
         {
             _hotkeyService = new HotkeyService(_hwndSource.Handle);
@@ -137,40 +138,52 @@ public partial class App : System.Windows.Application
 
     private async void OnHotkeyPressed(object? sender, EventArgs e)
     {
-        // 延迟一小段时间等待剪贴板更新
-        await Task.Delay(100);
-
-        var text = _clipboardService?.WaitForText();
-        if (string.IsNullOrWhiteSpace(text))
+        try
         {
-            ShowPopup("⚠️ 请先选中文本并复制 (Ctrl+C)");
-            return;
+            // 延迟一小段时间等待剪贴板更新
+            await Task.Delay(100);
+
+            var text = _clipboardService?.WaitForText();
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                ShowPopup("⚠️ 请先选中文本并复制 (Ctrl+C)");
+                return;
+            }
+
+            if (text.Length > 500)
+            {
+                text = text[..500] + "...";
+            }
+
+            // 关闭之前的弹出窗口
+            ClosePopup();
+
+            // 显示"翻译中..."
+            ShowPopup($"📖 {text}\n\n⏳ 翻译中...");
+
+            // 调用翻译
+            var result = await _translationService!.TranslateAsync(text);
+
+            // 显示结果
+            ClosePopup();
+            ShowPopup(text, result);
+
+            // 自动朗读
+            var autoReadVal = _config?.GetSection("TTS:AutoRead")?.Value;
+            bool autoRead = autoReadVal is null || !bool.TryParse(autoReadVal, out var parsed) || parsed;
+            if (autoRead && result != null && !string.IsNullOrWhiteSpace(result.Translation))
+            {
+                _ttsService?.Speak(text);
+            }
         }
-
-        if (text.Length > 500)
+        catch (Exception ex)
         {
-            text = text[..500] + "...";
-        }
-
-        // 关闭之前的弹出窗口
-        ClosePopup();
-
-        // 显示"翻译中..."
-        ShowPopup($"📖 {text}\n\n⏳ 翻译中...");
-
-        // 调用翻译
-        var result = await _translationService!.TranslateAsync(text);
-
-        // 显示结果
-        ClosePopup();
-        ShowPopup(text, result);
-
-        // 自动朗读
-        var autoReadVal = _config?.GetSection("TTS:AutoRead")?.Value;
-        bool autoRead = autoReadVal is null || !bool.TryParse(autoReadVal, out var parsed) || parsed;
-        if (autoRead && result != null && !string.IsNullOrWhiteSpace(result.Translation))
-        {
-            _ttsService?.Speak(text);
+            System.Diagnostics.Debug.WriteLine($"[TextHelper] Error: {ex}");
+            try
+            {
+                ShowPopup($"❌ 发生错误: {ex.Message}");
+            }
+            catch { }
         }
     }
 
