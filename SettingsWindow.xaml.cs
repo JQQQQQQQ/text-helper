@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WpfMessageBox = System.Windows.MessageBox;
 
 namespace TextHelper;
 
@@ -71,7 +72,7 @@ public partial class SettingsWindow : Window
 
             if (!File.Exists(configPath))
             {
-                MessageBox.Show($"未找到配置文件: {configPath}", "TextHelper", MessageBoxButton.OK, MessageBoxImage.Warning);
+                WpfMessageBox.Show($"未找到配置文件: {configPath}", "TextHelper", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -92,13 +93,13 @@ public partial class SettingsWindow : Window
 
             File.WriteAllText(configPath, root.ToString(Formatting.Indented));
 
-            MessageBox.Show("设置已保存", "TextHelper", MessageBoxButton.OK, MessageBoxImage.Information);
+            WpfMessageBox.Show("设置已保存", "TextHelper", MessageBoxButton.OK, MessageBoxImage.Information);
             DialogResult = true;
             Close();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"保存失败: {ex.Message}", "TextHelper", MessageBoxButton.OK, MessageBoxImage.Error);
+            WpfMessageBox.Show($"保存失败: {ex.Message}", "TextHelper", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
