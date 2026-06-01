@@ -9,13 +9,13 @@ namespace TextHelper.Services;
 /// <summary>
 /// 翻译服务 — 调用 DeepSeek API 获取翻译和解释
 /// </summary>
-public class TranslationService
+public class DeepSeekTranslationService : ITranslationService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
     private readonly string _model;
 
-    public TranslationService(string apiKey, string model = "deepseek-chat")
+    public DeepSeekTranslationService(string apiKey, string model = "deepseek-chat")
     {
         _httpClient = new HttpClient();
         _apiKey = apiKey;

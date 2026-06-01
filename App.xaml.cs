@@ -10,7 +10,7 @@ public partial class App : System.Windows.Application
 {
     private HotkeyService? _hotkeyService;
     private ClipboardService? _clipboardService;
-    private TranslationService? _translationService;
+    private ITranslationService? _translationService;
     private TtsService? _ttsService;
     private Forms.NotifyIcon? _trayIcon;
     private HwndSource? _hwndSource;
@@ -29,9 +29,17 @@ public partial class App : System.Windows.Application
         _clipboardService = new ClipboardService();
         _ttsService = new TtsService();
 
-        var apiKey = _config?["DeepSeek:ApiKey"] ?? "";
-        var model = _config?["DeepSeek:Model"] ?? "deepseek-chat";
-        _translationService = new TranslationService(apiKey, model);
+        var provider = (_config?["Translation:Provider"] ?? "deepseek").ToLowerInvariant();
+        if (provider == "google")
+        {
+            _translationService = new GoogleTranslationService();
+        }
+        else
+        {
+            var apiKey = _config?["DeepSeek:ApiKey"] ?? "";
+            var model = _config?["DeepSeek:Model"] ?? "deepseek-chat";
+            _translationService = new DeepSeekTranslationService(apiKey, model);
+        }
 
         // 3. 创建托盘图标
         CreateTrayIcon();

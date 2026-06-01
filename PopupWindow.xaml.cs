@@ -7,6 +7,7 @@ namespace TextHelper;
 public partial class PopupWindow : Window
 {
     private readonly TtsService? _ttsService;
+    private bool _isClosing;
 
     /// <summary>
     /// 状态消息模式（只显示文字）
@@ -45,12 +46,20 @@ public partial class PopupWindow : Window
     protected override void OnDeactivated(EventArgs e)
     {
         base.OnDeactivated(e);
-        Close();
+        if (!_isClosing)
+        {
+            _isClosing = true;
+            Close();
+        }
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        Close();
+        if (!_isClosing)
+        {
+            _isClosing = true;
+            Close();
+        }
     }
 
     private void SpeakButton_Click(object sender, RoutedEventArgs e)
