@@ -28,18 +28,7 @@ public partial class App : System.Windows.Application
         // 2. 初始化服务
         _clipboardService = new ClipboardService();
         _ttsService = new TtsService();
-
-        var provider = (_config?["Translation:Provider"] ?? "deepseek").ToLowerInvariant();
-        if (provider == "google")
-        {
-            _translationService = new GoogleTranslationService();
-        }
-        else
-        {
-            var apiKey = _config?["DeepSeek:ApiKey"] ?? "";
-            var model = _config?["DeepSeek:Model"] ?? "deepseek-chat";
-            _translationService = new DeepSeekTranslationService(apiKey, model);
-        }
+        InitializeTranslationService();
 
         // 3. 创建托盘图标
         CreateTrayIcon();
@@ -80,6 +69,7 @@ public partial class App : System.Windows.Application
         // 右键菜单
         var contextMenu = new Forms.ContextMenuStrip();
         contextMenu.Items.Add("显示", null, (s, e) => ShowPopup("请先复制文本，然后按快捷键"));
+        contextMenu.Items.Add("设置", null, (s, e) => OpenSettings());
         contextMenu.Items.Add("-");
         contextMenu.Items.Add("退出", null, (s, e) => ExitApp());
 
@@ -215,6 +205,33 @@ public partial class App : System.Windows.Application
     {
         _popupWindow?.Close();
         _popupWindow = null;
+    }
+
+    private void InitializeTranslationService()
+    {
+        var provider = (_config?["Translation:Provider"] ?? "deepseek").ToLowerInvariant();
+        if (provider == "google")
+        {
+            _translationService = new GoogleTranslationService();
+        }
+        else
+        {
+            var apiKey = _config?["DeepSeek:ApiKey"] ?? "";
+            var model = _config?["DeepSeek:Model"] ?? "deepseek-chat";
+            _translationService = new DeepSeekTranslationService(apiKey, model);
+        }
+    }
+
+    private void OpenSettings()
+    {
+        var settingsWindow = new SettingsWindow(_config);
+        var saved = settingsWindow.ShowDialog();
+
+        if (saved == true)
+        {
+            LoadConfig();
+            InitializeTranslationService();
+        }
     }
 
     private void ExitApp()

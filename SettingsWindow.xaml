@@ -1,0 +1,69 @@
+<Window x:Class="TextHelper.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TextHelper 设置"
+        Width="400"
+        Height="380"
+        MinWidth="400"
+        MaxWidth="400"
+        MinHeight="380"
+        MaxHeight="380"
+        ResizeMode="NoResize"
+        Topmost="True"
+        WindowStartupLocation="CenterScreen"
+        Background="#F7FAFF">
+    <Border Margin="12" Padding="14" CornerRadius="12" Background="White" BorderBrush="#4A90D9" BorderThickness="2">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="12" Opacity="0.2" ShadowDepth="2" Color="Black"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="翻译设置" FontSize="16" FontWeight="Bold" Foreground="#2E5F99" Margin="0,0,0,10"/>
+
+            <TextBlock Grid.Row="1" Text="翻译引擎" Foreground="#333" Margin="0,0,0,4"/>
+            <ComboBox x:Name="ProviderComboBox" Grid.Row="2" Height="30" SelectedIndex="0" SelectionChanged="ProviderComboBox_SelectionChanged">
+                <ComboBoxItem Content="DeepSeek"/>
+                <ComboBoxItem Content="Google"/>
+            </ComboBox>
+
+            <StackPanel x:Name="DeepSeekPanel" Grid.Row="3" Margin="0,10,0,0">
+                <TextBlock Text="API Key" Foreground="#333" Margin="0,0,0,4"/>
+                <PasswordBox x:Name="ApiKeyPasswordBox" Height="30" Margin="0,0,0,8"/>
+
+                <TextBlock Text="模型名称" Foreground="#333" Margin="0,0,0,4"/>
+                <TextBox x:Name="ModelTextBox" Height="30" Text="deepseek-chat"/>
+            </StackPanel>
+
+            <TextBlock Grid.Row="6" Text="语音设置" FontSize="16" FontWeight="Bold" Foreground="#2E5F99" Margin="0,14,0,10"/>
+
+            <CheckBox x:Name="AutoReadCheckBox" Grid.Row="7" Content="自动朗读" Foreground="#333" Margin="0,0,0,8"/>
+
+            <StackPanel Grid.Row="8">
+                <TextBlock Text="朗读语速" Foreground="#333" Margin="0,0,0,4"/>
+                <ComboBox x:Name="RateComboBox" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button Content="保存" Width="76" Height="32" Margin="0,0,8,0"
+                        Background="#4A90D9" Foreground="White" BorderThickness="0"
+                        Click="SaveButton_Click"/>
+                <Button Content="取消" Width="76" Height="32"
+                        Background="#F0F4FA" Foreground="#333" BorderBrush="#D0DBEA"
+                        Click="CancelButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
